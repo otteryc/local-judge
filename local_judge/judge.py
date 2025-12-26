@@ -358,14 +358,14 @@ def main() -> int:
         )
 
     # Assign specific input for this judgement
-    if not args.input is None:
+    if args.input is not None:
         args.verbose = True
         judge.tests = judge.inputs_to_tests(
             utils.create_specific_input(args.input, config)
         )
 
     # Copy output files into given directory without judgement
-    if not args.output is None:
+    if args.output is not None:
         copy_output_to_dir(
             judge,
             args.output,

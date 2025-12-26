@@ -211,7 +211,7 @@ def judge_one_student(
     # Not calcute the total score because there may be some hidden test cases
     # Use the formula of google sheet or excel to get the total score.
     result = append_log_msg(correctness, lj.error_handler.get_error(student.id))
-    if not all_student_results is None:
+    if all_student_results is not None:
         all_student_results[student.id] = result
     return {
         "student_id": student.id,
@@ -340,7 +340,7 @@ def main():
         report.table = res_dict["report_table"]
         report.print_report()
 
-    elif not args.update is None:
+    elif args.update is not None:
         # Update one student's judge result
         this_student_id = args.update
         tj.extract_afresh = "false"
