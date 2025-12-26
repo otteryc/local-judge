@@ -292,6 +292,7 @@ def get_args():
 
 
 def setup():
+    # Ignore SIGINT (Ctrl+C) during local-judge 
     signal.signal(signal.SIGINT, signal.SIG_IGN)
 
 
