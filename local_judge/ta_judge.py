@@ -297,11 +297,15 @@ def setup():
 
 
 def main():
-    print(f"local-judge: v{__version__}")
     args = get_args()
     if not os.path.isfile(args.ta_config):
         print("Config file `" + args.ta_config + "` not found.")
         return 1
+
+    if args.jobs < 1:
+        print(f"Invalid process number: {args.jobs}")
+
+    print(f"local-judge: v{__version__}")
 
     ta_config = configparser.ConfigParser()
     ta_config.read(args.ta_config)
@@ -375,7 +379,7 @@ def main():
                 break
         book.save(ta_config["TaConfig"]["ScoreOutput"])
 
-    elif args.jobs > 1:
+    else:
         # Test phase
         with multiprocessing.Manager() as manager:
             all_student_results = manager.dict()
@@ -416,34 +420,6 @@ def main():
                 dict(all_student_results),
                 lj.tests,
             )
-    else:
-        # Test in one thread
-        all_student_results = {}
-        empty_result = [""] * len(lj.tests)
-        for student in tj.students:
-            try:
-                result_pack = judge_one_student(
-                    student, all_student_results, tj, lj, True
-                )
-                all_student_results[student.id] = result_pack["result"]
-            except KeyboardInterrupt:
-                if input("\nReally quit? (y/n)> ").lower().startswith("y"):
-                    # Ref: https://stackoverflow.com/a/18115530
-                    print("Write current score to sheet")
-                    break
-                print(f"Skip one student: {student.id}")
-                lj.error_handler.handle("skip", student_id=student.id)
-                result = append_log_msg(
-                    empty_result, lj.error_handler.get_error(student.id)
-                )
-                all_student_results[student.id] = result
-                continue
-        write_to_sheet(
-            ta_config["TaConfig"]["ScoreOutput"],
-            ta_config["TaConfig"]["StudentList"],
-            all_student_results,
-            lj.tests,
-        )
     print("Finished")
 
 
