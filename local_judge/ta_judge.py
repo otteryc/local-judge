@@ -373,6 +373,8 @@ def main():
                         "log_msg",
                     ]:
                         continue
+                    # In openpyxl and excel sheets, col and row starts from (1, 1).
+                    # cell.col_idx - 3 for the starting index of 1, Name and Student ID.
                     if cell.col_idx - 3 >= len(result):
                         break
                     cell.value = result[cell.col_idx - 3]
